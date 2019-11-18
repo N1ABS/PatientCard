@@ -1,0 +1,110 @@
+﻿@model PatientCard.WebApp.Models.ViewModels.VisitLogViewModel
+
+<div class="k-edit-form-container">
+
+    @Html.HiddenFor(model => model.Id)
+    
+    
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.DoctorId)
+        </div>
+        <div class="col-md-8">
+            @(Html.Kendo().ComboBoxFor(model => model.DoctorId)
+                  //.Name("StateProvince")
+                  .HtmlAttributes(new
+                  {
+                      @DoctorId = "Doctor",
+                      @Style = "width: 100%"
+                  })
+                  //.Filter("startswith")
+                  .DataValueField("Id")
+                  .DataTextField("Name")
+                  .BindTo((System.Collections.IEnumerable)ViewData["doctors"])
+                  )
+
+            @Html.ValidationMessageFor(model => model.DoctorId)
+        </div>
+    </div>
+
+    
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.PatientId)
+        </div>
+        <div class="col-md-8">
+            @(Html.Kendo().ComboBoxFor(model => model.PatientId)
+                  //.Name("StateProvince")
+                  .HtmlAttributes(new
+                  {
+                      @PatientId = "Patient",
+                      @Style = "width: 100%"
+                  })
+                  //.Filter("startswith")
+                  .DataValueField("Id")
+                  .DataTextField("Name")
+                  .BindTo((System.Collections.IEnumerable)ViewData["patients"])
+                  )
+
+            @Html.ValidationMessageFor(model => model.PatientId)
+        </div>
+    </div>
+
+
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.Complaint)
+        </div>
+        <div class="col-md-8">
+            @*@Html.EditorFor(model => model.Name)*@
+            @(Html.Kendo().EditorFor(model => model.Complaint)
+                  .HtmlAttributes(new
+                  {
+                      @class = "form-control",
+                      @style = "display: inline"
+                  })
+                  .Tools(t => t.Clear()))
+            @Html.ValidationMessageFor(model => model.Complaint)
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.Diagnosis)
+        </div>
+        <div class="col-md-8">
+            @*@Html.EditorFor(model => model.Name)*@
+            @(Html.Kendo().EditorFor(model => model.Diagnosis)
+                  .HtmlAttributes(new
+                  {
+                      @class = "form-control",
+                      @style = "display: inline"
+                  }))
+            @Html.ValidationMessageFor(model => model.Diagnosis)
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.VisitDate)
+        </div>
+        <div class="col-md-8">
+            @*@Html.EditorFor(model => model.Name)*@
+            @(Html.Kendo().DatePickerFor(model => model.VisitDate)
+                  .HtmlAttributes(new
+                  {
+                      @class = "form-control",
+                      @style = "display: inline"
+                  }))
+            @Html.ValidationMessageFor(model => model.VisitDate)
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    .k-editor-toolbar {
+        display: none !important;
+    }
+</style>

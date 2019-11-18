@@ -1,0 +1,44 @@
+﻿@model PatientCard.WebApp.Models.ViewModels.DoctorViewModel
+
+<div class="k-edit-form-container">
+
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="col-md-8">
+            @*@Html.EditorFor(model => model.Name)*@
+            @(Html.Kendo().TextBoxFor(model => model.Name)
+                  .HtmlAttributes(new
+                  {
+                      @class = "form-control",
+                      @style = "display: inline"
+                  }))
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-4 text-center">
+            @Html.LabelFor(model => model.SpecialtyId)
+        </div>
+        <div class="col-md-8">
+            @(Html.Kendo().ComboBoxFor(model => model.SpecialtyId)
+                  //.Name("StateProvince")
+                  .HtmlAttributes(new
+                  {
+                      @SpecialtyId = "Specialty",
+                      @Style = "width: 100%"
+                  })
+                  //.Filter("startswith")
+                  .DataValueField("Id")
+                  .DataTextField("Name")
+                  .BindTo((System.Collections.IEnumerable)ViewData["specialties"])
+            )
+
+            @Html.ValidationMessageFor(model => model.SpecialtyId)
+        </div>
+    </div>
+</div>

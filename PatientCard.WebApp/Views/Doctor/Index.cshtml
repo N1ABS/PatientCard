@@ -1,0 +1,44 @@
+﻿@using PatientCard.WebApp.Models.ViewModels
+@model IEnumerable<PatientCard.WebApp.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Доктора";
+}
+
+<h1>Доктора</h1>
+<br />
+
+@(Html.Kendo().Grid<DoctorViewModel>()
+      .Name("grid")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Filterable(false).Width(100);
+          columns.Bound(p => p.Name);
+          columns.ForeignKey(p => p.SpecialtyId, (System.Collections.IEnumerable)ViewData["specialties"], "Id", "Name")
+              .Title("Специальность");
+          columns.Command(command => { command.Edit().Text("Изменить"); command.Destroy().Text("Удалить"); }).Width(250);
+      })
+      .Pageable(p => p.Refresh(true))
+      .Sortable()
+      .ToolBar(toolbar => toolbar.Create().Text("Создать"))
+      .Editable(editable =>
+      {
+          editable.Mode(GridEditMode.PopUp).TemplateName("DoctorEditor");
+          editable.Window(w => w.Title("Создать/Изменить"));
+      })
+      .Scrollable()
+      .Filterable()
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .PageSize(20)
+          .ServerOperation(false)
+          .Model(model =>
+          {
+              model.Id(p => p.Id);
+              model.Field(p => p.SpecialtyId).DefaultValue(1);
+          })
+          .Create(update => update.Action("DoctorCreate", "Doctor"))
+          .Read(read => read.Action("DoctorRead", "Doctor"))
+          .Update(update => update.Action("DoctorUpdate", "Doctor"))
+          .Destroy(destroy => destroy.Action("DoctorDelete", "Doctor"))
+      ))

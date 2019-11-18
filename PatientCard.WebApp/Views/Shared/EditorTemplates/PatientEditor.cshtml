@@ -1,0 +1,73 @@
+﻿@model PatientCard.WebApp.Models.ViewModels.PatientViewModel
+
+    <div class="k-edit-form-container">
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="row form-group">
+            <div class="col-md-4 text-center">
+                @Html.LabelFor(model => model.Name)
+            </div>
+            <div class="col-md-8">
+                @*@Html.EditorFor(model => model.Name)*@
+                @(Html.Kendo().TextBoxFor(model => model.Name)
+                      .HtmlAttributes(new
+                      {
+                          @class = "form-control",
+                          @style = "display: inline"
+                      }))
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-4 text-center">
+                @Html.LabelFor(model => model.Iin)
+            </div>
+            <div class="col-md-8">
+                @*@Html.EditorFor(model => model.Name)*@
+                @(Html.Kendo().MaskedTextBoxFor(model => model.Iin)
+                      .HtmlAttributes(new
+                      {
+                          @class = "form-control",
+                          @style = "display: inline"
+                      })
+                      .Mask("000000000000"))
+                @Html.ValidationMessageFor(model => model.Iin)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-4 text-center">
+                @Html.LabelFor(model => model.Address)
+            </div>
+            <div class="col-md-8">
+                @*@Html.EditorFor(model => model.Name)*@
+                @(Html.Kendo().TextBoxFor(model => model.Address)
+                      .HtmlAttributes(new
+                      {
+                          @class = "form-control",
+                          @style = "display: inline"
+                      }))
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-md-4 text-center">
+                @Html.LabelFor(model => model.Phone)
+            </div>
+            <div class="col-md-8">
+                @*@Html.EditorFor(model => model.Name)*@
+                @(Html.Kendo().MaskedTextBoxFor(model => model.Phone)
+                      .HtmlAttributes(new
+                      {
+                          @class = "form-control",
+                          @style = "display: inline"
+                      })
+                      .Mask("(###) 000-0000"))
+                @Html.ValidationMessageFor(model => model.Phone)
+            </div>
+        </div>
+
+    </div>

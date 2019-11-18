@@ -1,0 +1,52 @@
+﻿@using PatientCard.WebApp.Models.ViewModels
+@model IEnumerable<PatientCard.WebApp.Models.VisitLog>
+
+@{
+    ViewData["Title"] = "Журнал посещений";
+}
+
+<h1>Журнал посещений</h1>
+<br />
+
+@(Html.Kendo().Grid<VisitLogViewModel>()
+      .Name("grid")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Filterable(false).Width(100);
+          columns.ForeignKey(p => p.DoctorId, (System.Collections.IEnumerable)ViewData["doctors"], "Id", "Name")
+              .Title("Доктора");
+          columns.ForeignKey(p => p.PatientId, (System.Collections.IEnumerable)ViewData["patients"], "Id", "Name")
+              .Title("Пациенты");
+          columns.Bound(p => p.Diagnosis);
+          columns.Bound(p => p.VisitDate).Format("{0:dd/MM/yyyy}");
+          columns.Command(command => { command.Edit().Text("Изменить"); command.Destroy().Text("Удалить"); }).Width(250);
+      })
+      .Pageable(p => p.Refresh(true))
+      .Sortable()
+      .ToolBar(toolbar => toolbar.Create().Text("Создать"))
+      .Editable(editable =>
+      {
+          editable.Mode(GridEditMode.PopUp).TemplateName("VisitLogEditor");
+          editable.Window(w =>
+          {
+              w.Title("Создать/Изменить");
+              
+          });
+      })
+      .Scrollable()
+      .Filterable()
+      .DataSource(dataSource => dataSource
+              .Ajax()
+              .PageSize(20)
+              .ServerOperation(false)
+              .Model(model =>
+              {
+                  model.Id(p => p.Id);
+                  model.Field(p => p.DoctorId).DefaultValue(1);
+                  model.Field(p => p.PatientId).DefaultValue(1);
+              })
+              .Create(update => update.Action("VisitLogCreate", "VisitLog"))
+          .Read(read => read.Action("VisitLogRead", "VisitLog"))
+          .Update(update => update.Action("VisitLogUpdate", "VisitLog"))
+          .Destroy(destroy => destroy.Action("VisitLogDelete", "VisitLog"))
+      ))

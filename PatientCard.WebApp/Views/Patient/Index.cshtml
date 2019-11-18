@@ -1,0 +1,92 @@
+﻿@using PatientCard.WebApp.Models.ViewModels
+@model IEnumerable<PatientCard.WebApp.Models.Patient>
+
+@{
+    ViewData["Title"] = "Пациенты";
+}
+
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+<h1>Пациенты</h1>
+<br />
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" class="form-control" id='searchIin' placeholder="Поиск по ИИН">
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" class="form-control" id='searchName' placeholder="Поиск по ФИО">
+        </div>
+    </div>
+</div>
+<br />
+
+@(Html.Kendo().Grid<PatientViewModel>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Id).Filterable(false).Width(100);
+        columns.Bound(p => p.Name).ClientTemplate("<a style='text-decoration:underline; color: blue; font-weight: bold;' href='Patient/Details/#=Id#'>#=Name#</a>");
+        columns.Bound(p => p.Iin);
+        columns.Bound(p => p.Address);
+        columns.Bound(p => p.Phone);
+        columns.Command(command => { command.Edit().Text("Изменить"); command.Destroy().Text("Удалить"); }).Width(250);
+    })
+    .Pageable(p => p.Refresh(true))
+    .Sortable()
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create().Text("Создать");
+    })
+    .Editable(editable =>
+    {
+        editable.Mode(GridEditMode.PopUp).TemplateName("PatientEditor");
+        editable.Window(w => w.Title("Создать/Изменить"));
+    })
+    .Scrollable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .Model(model => model.Id(p => p.Id))
+        .Create(update => update.Action("PatientCreate", "Patient"))
+        .Read(read => read.Action("PatientRead", "Patient"))
+        .Update(update => update.Action("PatientUpdate", "Patient"))
+        .Destroy(destroy => destroy.Action("PatientDelete", "Patient"))
+    ))
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#searchIin").keyup(function () {
+
+            var value = $("#searchIin").val();
+            var grid = $("#grid").data("kendoGrid");
+
+            if (value) {
+                grid.dataSource.filter({ field: "Iin", operator: "contains", value: value });
+            } else {
+                grid.dataSource.filter({});
+            }
+        });
+        
+        $("#searchName").keyup(function () {
+
+            var value = $("#searchName").val();
+            var grid = $("#grid").data("kendoGrid");
+
+            if (value) {
+                grid.dataSource.filter({ field: "Name", operator: "contains", value: value });
+            } else {
+                grid.dataSource.filter({});
+            }
+        });
+    });
+</script>

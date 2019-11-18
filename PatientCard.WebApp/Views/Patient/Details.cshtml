@@ -1,0 +1,74 @@
+﻿@using PatientCard.WebApp.Models.ViewModels
+@model PatientCard.WebApp.Models.ViewModels.PatientViewModel
+
+@{
+    ViewData["Title"] = "Детали";
+}
+
+@{
+    var patientId = Model.Id;
+}
+
+<div>
+    <a href="/"><h5>Назад</h5></a>
+    <h4>Пациент</h4>
+    <hr/>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Iin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Iin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+    </dl>
+</div>
+
+<hr/>
+<br />
+<h4>Журнал записей к врачам</h4>
+
+@(Html.Kendo().Grid<VisitLogViewModel>()
+      .Name("grid")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Filterable(false).Width(100);
+          columns.ForeignKey(p => p.DoctorId, (System.Collections.IEnumerable)ViewData["doctors"], "Id", "Name")
+              .Title("Доктор");
+          columns.Bound(p => p.Diagnosis);
+          columns.Bound(p => p.Complaint);
+          columns.Bound(p => p.VisitDate).Format("{0:dd/MM/yyyy}");
+      })
+      .Pageable(p => p.Refresh(true))
+      .Sortable()
+      .Scrollable()
+      .Filterable()
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .PageSize(20)
+          .ServerOperation(false)
+          .Model(model =>
+          {
+              model.Id(p => p.Id);
+              model.Field(p => p.DoctorId).DefaultValue(1);
+              model.Field(p => p.PatientId).DefaultValue(1);
+          })
+          .Read(read => read.Action("VisitLogByPatientIdRead", "VisitLog", new { patientId = @patientId}))
+      ))
